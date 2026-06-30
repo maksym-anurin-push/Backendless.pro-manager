@@ -42,7 +42,10 @@ class InstallService {
      * @param {InstallArgument} [install]
      */
     async install(install) {
-        fs.promises.readdir(install.mountPath)
+        // fs.promises.readdir(install.mountPath)
+        if (!(fs.existsSync(install.mountPath))) {
+            await fs.promises.mkdir(install.mountPath, {recursive: true})
+        }
 
         if (!(await checkReadWriteAccess(install.mountPath))) {
             throw new ApiError.BadRequestError(`Read write access is denied for ${install.mountPath}'`)

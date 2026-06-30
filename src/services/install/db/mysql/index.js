@@ -42,12 +42,18 @@ export async function installMysql({ version, mountPath }) {
         path: fileNames.conf
     })
 
+    // volumes.push({
+    //     name:     'data',
+    //     hostPath: {
+    //         path: `${mountPath}/mysql/data`,
+    //         type: 'DirectoryOrCreate'
+    //     },
+    // })
     volumes.push({
         name:     'data',
-        hostPath: {
-            path: `${mountPath}/mysql/data`,
-            type: 'DirectoryOrCreate'
-        },
+       persistentVolumeClaim: {
+            claimName: 'bl-mysql-data'
+        }
     })
 
     if (!isWin()) {
@@ -85,6 +91,20 @@ export async function installMysql({ version, mountPath }) {
     })
 
     installStatus.info('creating statefulset for mysql')
+
+    await k8sCoreV1Api.createNamespacedPersistentVolumeClaim(await k8sConfig.getNamespace(), {
+        apiVersion: 'v1',
+        kind: 'PersistentVolumeClaim',
+        metadata: { name: 'bl-mysql-data' },
+        spec: {
+            accessModes: ['ReadWriteOnce'],
+            storageClassName: 'local-path',
+            resources: {
+            requests: { storage: '10Gi' }
+            }
+        }
+    })
+
     const createMysqlStateful = await k8sAppsV1Api.createNamespacedStatefulSet(await k8sConfig.getNamespace(), workload)
     installStatus.info('creating service for mysql')
     const createMysqlServiceResult = await k8sCoreV1Api.createNamespacedService(await k8sConfig.getNamespace(), mysqlK8sConfig.service)

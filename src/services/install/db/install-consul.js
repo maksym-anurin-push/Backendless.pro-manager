@@ -7,15 +7,35 @@ export async function installConsul({ mountPath }) {
     const consulK8sConfig = new ConsulConfig()
     installStatus.info('installing consul...')
     const workload = consulK8sConfig.workload
+    // workload.spec.template.spec.volumes.push({
+    //   hostPath: {
+    //     path: `${mountPath}/consul/data`,
+    //         type: 'DirectoryOrCreate'
+    //   },
+    //     name: 'consul-data'
+    // })
     workload.spec.template.spec.volumes.push({
-        hostPath: {
-            path: `${mountPath}/consul/data`,
-            type: 'DirectoryOrCreate'
+        name: 'consul-data',
+        persistentVolumeClaim: {
+            claimName: 'bl-consul-data',
         },
-        name: 'consul-data'
     })
 
     installStatus.info('creating statefulset for consul')
+
+    await k8sCoreV1Api.createNamespacedPersistentVolumeClaim(await k8sConfig.getNamespace(), {
+        apiVersion: 'v1',
+        kind: 'PersistentVolumeClaim',
+        metadata: { name: 'bl-consul-data' },
+        spec: {
+            accessModes: ['ReadWriteOnce'],
+            storageClassName: 'local-path',
+            resources: {
+                requests: { storage: '1Gi' }
+            }
+        }
+    })
+
     const createConsulStateful = await k8sAppsV1Api.createNamespacedStatefulSet(await k8sConfig.getNamespace(), workload)
     installStatus.info('creating service for consul')
     const createConsulServiceResult = await k8sCoreV1Api.createNamespacedService(await k8sConfig.getNamespace(), consulK8sConfig.service)

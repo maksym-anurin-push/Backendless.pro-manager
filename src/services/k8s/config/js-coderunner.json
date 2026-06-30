@@ -116,6 +116,10 @@
               },
               "volumeMounts": [
                 {
+                  "mountPath": "/node_modules",
+                  "name": "node-modules"
+                },
+                {
                   "mountPath": "/opt/backendless/repo",
                   "name": "repo"
                 },

@@ -1,4 +1,4 @@
-import { k8sAppsV1Api } from '../../k8s/k8s'
+import { k8sAppsV1Api, k8sCoreV1Api } from '../../k8s/k8s'
 import { installStatus } from '../install-status'
 import { readFileContent } from '../../../utils/fs'
 import path from 'path'
@@ -9,6 +9,7 @@ export async function installBlJsCoderunner({ mountPath, version }) {
     installStatus.info('installing bl-coderunner-js...')
     const workload = blK8sConfig.workload
     workload.spec.template.spec.containers[0].image=`backendless/bl-coderunner-js:${version}`
+
     workload.spec.template.spec.volumes.push({
         hostPath: {
             path: `${mountPath}/repo`,
@@ -25,6 +26,27 @@ export async function installBlJsCoderunner({ mountPath, version }) {
         name: 'logs'
     })
 
+    workload.spec.template.spec.volumes.push({
+       persistentVolumeClaim: {
+            claimName: 'bl-coderunner-js-node-modules'
+        },
+        name: 'node-modules'
+    })
+
     installStatus.info('creating deployment for bl-coderunner-js')
+
+    await k8sCoreV1Api.createNamespacedPersistentVolumeClaim(await k8sConfig.getNamespace(), {
+        apiVersion: 'v1',
+        kind: 'PersistentVolumeClaim',
+        metadata: { name: 'bl-coderunner-js-node-modules' },
+        spec: {
+            accessModes: ['ReadWriteOnce'],
+            storageClassName: 'local-path',
+            resources: {
+                requests: { storage: '4Gi' }
+            }
+        }
+    })
+
     return await k8sAppsV1Api.createNamespacedDeployment(await k8sConfig.getNamespace(), workload)
 }

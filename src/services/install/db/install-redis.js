@@ -16,13 +16,21 @@ export async function installRedis({ fullMountPath, logMountPath, internalPort, 
     const workload = redisK8sConfig.workload
     const specConfig = workload.spec.template.spec
 
+    // specConfig.volumes.push({
+    //     hostPath: {
+    //         path: `${fullMountPath}`,
+    //         type: 'DirectoryOrCreate'
+    //     },
+    //     name: 'data'
+    // })
+    const volumeClaimName = `${name}-data`;
     specConfig.volumes.push({
-        hostPath: {
-            path: `${fullMountPath}`,
-            type: 'DirectoryOrCreate'
-        },
-        name: 'data'
+        name:     'data',
+       persistentVolumeClaim: {
+            claimName: volumeClaimName
+        }
     })
+
 
     const containerConfig = specConfig.containers[0]
     if (!isWin()) {
@@ -62,6 +70,20 @@ export async function installRedis({ fullMountPath, logMountPath, internalPort, 
     containerConfig.ports[0].containerPort = internalPort
 
     installStatus.info(`creating statefulset for ${name}`)
+
+    await k8sCoreV1Api.createNamespacedPersistentVolumeClaim(await k8sConfig.getNamespace(), {
+        apiVersion: 'v1',
+        kind: 'PersistentVolumeClaim',
+        metadata: { name: volumeClaimName },
+        spec: {
+            accessModes: ['ReadWriteOnce'],
+            storageClassName: 'local-path',
+            resources: {
+            requests: { storage: '1Gi' }
+            }
+        }
+    })
+
     logger.verbose(`creating statefulset for ${name} with workload '${JSON.stringify(workload)}'`)
     const createStateful = await k8sAppsV1Api.createNamespacedStatefulSet(await k8sConfig.getNamespace(), workload)
     logger.verbose(`result of create stateful set for ${name} is: ${JSON.stringify(createStateful)}`)

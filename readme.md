@@ -1,3 +1,18 @@
+```shell
+orb delete k8s --force; \
+sleep 3; \
+rm -r k8s-mount; \
+rm -r db; \
+orb restart k8s; \
+sleep 3; \
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.5.1/deploy/static/provider/cloud/deploy.yaml; \
+sleep 3; \
+kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.12.0/cert-manager.yaml; \
+sleep 3; \
+npm run start
+```
+
+
 # Welcome to Backendless Pro
 
 Backendless Pro is a uniquely tailored version of the widely recognized Backendless Platform, designed to meet diverse deployment needs. This special package offers the flexibility to be installed in various environments. Whether it's for individual developers or large-scale enterprise operations, Backendless Pro adapts seamlessly to different requirements.

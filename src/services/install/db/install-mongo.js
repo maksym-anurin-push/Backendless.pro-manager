@@ -15,12 +15,18 @@ export async function installMongo({ mountPath }) {
     installStatus.info('installing mongo...')
     const workload = mongoK8sConfig.workload
     const specConfig = workload.spec.template.spec
+    // specConfig.volumes.push({
+    //     hostPath: {
+    //         path: `${mountPath}/mongo/data`,
+    //         type: 'DirectoryOrCreate'
+    //     },
+    //     name: 'data'
+    // })
     specConfig.volumes.push({
-        hostPath: {
-            path: `${mountPath}/mongo/data`,
-            type: 'DirectoryOrCreate'
+        name: 'data',
+        persistentVolumeClaim: {
+            claimName: 'bl-mongo-data',
         },
-        name: 'data'
     })
 
     if(!isWin()) {
@@ -60,6 +66,20 @@ export async function installMongo({ mountPath }) {
 
     logger.verbose(`creating stateful set for mongo with config: ${JSON.stringify(workload)}`)
     installStatus.info('creating statefulset for mongo')
+
+    await k8sCoreV1Api.createNamespacedPersistentVolumeClaim(await k8sConfig.getNamespace(), {
+        apiVersion: 'v1',
+        kind: 'PersistentVolumeClaim',
+        metadata: { name: 'bl-mongo-data' },
+        spec: {
+            accessModes: ['ReadWriteOnce'],
+            storageClassName: 'local-path',
+            resources: {
+                requests: { storage: '4Gi' }
+            }
+        }
+    })
+
     const createStatefulsetResult = await k8sAppsV1Api.createNamespacedStatefulSet(await k8sConfig.getNamespace(), workload)
     installStatus.info('creating service for mongo')
     const createServiceResult = await k8sCoreV1Api.createNamespacedService(await k8sConfig.getNamespace(), mongoK8sConfig.service)
