@@ -78,7 +78,7 @@
                   }
                 }
               ],
-              "image": "backendless/bl-coderunner-js:",
+              "image": "ghcr.io/maksym-anurin-push/wearepush/backendless/bl-coderunner-js:",
               "imagePullPolicy": "IfNotPresent",
               "startupProbe": {
                 "failureThreshold": 80,

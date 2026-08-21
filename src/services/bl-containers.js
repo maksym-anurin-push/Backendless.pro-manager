@@ -25,7 +25,7 @@ class BlContainers {
     bl = {
         server: {
             name: 'bl-server',
-            imageName: 'bl-server',
+            imageName: 'backendless/bl-server',
             serviceStatus: () => blDeploymentStatus('bl-server'),
             installService: installArguments => installBlServer(installArguments),
             deleteService: () => deleteDeploymentAndService('bl-server'),
@@ -34,7 +34,7 @@ class BlContainers {
         },
         rtServer: {
             name: 'bl-rt-server',
-            imageName: 'bl-rt-server',
+            imageName: 'backendless/bl-rt-server',
             serviceStatus: () => blDeploymentStatus('bl-rt-server'),
             installService: installArguments => installBlRtServer(installArguments),
             deleteService: () => deleteDeploymentAndService('bl-rt-server'),
@@ -43,7 +43,7 @@ class BlContainers {
         },
         taskman: {
             name: 'bl-taskman',
-            imageName: 'bl-server',
+            imageName: 'backendless/bl-server',
             serviceStatus: () => blDeploymentStatus('bl-taskman'),
             installService: installArguments => installBlTaskman(installArguments),
             deleteService: () => deleteDeploymentAndService('bl-taskman'),
@@ -52,7 +52,7 @@ class BlContainers {
         },
         hazelcast: {
             name: 'bl-hazelcast-3125',
-            imageName: 'bl-hazelcast',
+            imageName: 'backendless/bl-hazelcast',
             serviceStatus: () => blDeploymentStatus('bl-hazelcast-3125'),
             installService: installArguments => installBlHazelcast(installArguments),
             deleteService: () => deleteDeploymentAndService('bl-hazelcast-3125'),
@@ -60,7 +60,7 @@ class BlContainers {
             restart: () => deploymentRestart('bl-hazelcast-3125')
         },
         javaCoderunner: {
-            name: 'bl-coderunner-java',
+            name: 'backendless/bl-coderunner-java',
             imageName: 'bl-coderunner-java',
             serviceStatus: () => blDeploymentStatus('bl-coderunner-java'),
             installService: installArguments => installBlJavaCoderunner(installArguments),
@@ -70,7 +70,7 @@ class BlContainers {
         },
         jsCoderunner: {
             name: 'bl-coderunner-js',
-            imageName: 'bl-coderunner-js',
+            imageName: 'ghcr.io/maksym-anurin-push/wearepush/backendless/bl-coderunner-js',
             serviceStatus: () => blDeploymentStatus('bl-coderunner-js'),
             installService: installArguments => installBlJsCoderunner(installArguments),
             deleteService: () => deleteDeploymentAndService('bl-coderunner-js'),
@@ -79,7 +79,7 @@ class BlContainers {
         },
         console: {
             name: 'bl-web-console',
-            imageName: 'bl-web-console',
+            imageName: 'backendless/bl-web-console',
             serviceStatus: () => blDeploymentStatus('bl-web-console'),
             installService: installArguments => installBlWebConsole(installArguments),
             deleteService: () => deleteDeploymentAndService('bl-web-console'),
@@ -88,7 +88,7 @@ class BlContainers {
         },
         nodeServer: {
             name:           'bl-node-server',
-            imageName:      'bl-node-server',
+            imageName:      'backendless/bl-node-server',
             serviceStatus:  () => blDeploymentStatus('bl-node-server'),
             installService: installArguments => installNodeServer(installArguments),
             deleteService:  () => deleteDeploymentAndService('bl-node-server'),

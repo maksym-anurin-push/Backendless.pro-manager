@@ -73,7 +73,7 @@ class UpgradeService {
                     'spec': {
 
                         'containers': [{
-                            'image': `backendless/${imageName}:${version}`,
+                            'image': `${imageName}:${version}`,
                             'name': serviceName
                         }]
                     }

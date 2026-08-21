@@ -14,6 +14,12 @@ sleep 3; \
 arch -x86_64 zsh --login -c 'nvm use v22-x64 && npm start'
 ```
 
+```shell
+kubectl get deploy
+kubectl get deploy bl-coderunner-js -o jsonpath='{.spec.template.spec.containers[*].name}'
+kubectl get deploy bl-coderunner-js -o jsonpath='{.spec.template.spec.containers[0].image}'
+kubectl set image deployment/bl-coderunner-js bl-coderunner-js=ghcr.io/maksym-anurin-push/wearepush/backendless/bl-coderunner-js:8.1.10.28
+```
 
 # Welcome to Backendless Pro
 

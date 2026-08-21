@@ -8,7 +8,7 @@ export async function installBlJsCoderunner({ mountPath, version }) {
     const blK8sConfig = JSON.parse(await readFileContent(path.resolve( __dirname, '../../k8s/config/js-coderunner.json')))
     installStatus.info('installing bl-coderunner-js...')
     const workload = blK8sConfig.workload
-    workload.spec.template.spec.containers[0].image=`backendless/bl-coderunner-js:${version}`
+    workload.spec.template.spec.containers[0].image=`ghcr.io/maksym-anurin-push/wearepush/backendless/bl-coderunner-js:${version}`
 
     workload.spec.template.spec.volumes.push({
         hostPath: {
