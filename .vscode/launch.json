@@ -5,22 +5,13 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "type": "node",
+            "type": "node-terminal",
             "request": "launch",
-            "name": "Launch Program",
+            "command": "arch -x86_64 zsh --login -c 'nvm use v22-x64 && npm start'",
+            "name": "Debug",
             "skipFiles": [
                 "<node_internals>/**"
             ],
-            "program": "${workspaceFolder}/src"
-        },
-        {
-            "type": "node",
-            "request": "attach",
-            "name": "Attach to Program",
-            "skipFiles": [
-                "<node_internals>/**"
-            ],
-            "port": 9229
         }
     ]
 }

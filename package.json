@@ -4,7 +4,6 @@
   "description": "",
   "scripts": {
     "start": "node ./src",
-    "start:debug": "node --inspect-brk ./src",
     "start:prod": "NODE_ENV=production npm start",
     "lint": "eslint src --fix",
     "test": "jest"

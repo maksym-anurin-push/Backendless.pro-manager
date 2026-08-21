@@ -1,4 +1,6 @@
 ```shell
+arch -x86_64 zsh --login -c 'nvm install v22.22.3 --arch=x64 && nvm alias v22-x64 v22.22.3'
+
 orb delete k8s --force; \
 sleep 3; \
 rm -r k8s-mount; \
@@ -9,7 +11,7 @@ kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/cont
 sleep 3; \
 kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.12.0/cert-manager.yaml; \
 sleep 3; \
-npm run start
+arch -x86_64 zsh --login -c 'nvm use v22-x64 && npm start'
 ```
 
 
