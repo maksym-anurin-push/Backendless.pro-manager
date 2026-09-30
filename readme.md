@@ -1,29 +1,37 @@
-```shell
-arch -x86_64 zsh --login -c 'nvm install v22.22.3 --arch=x64 && nvm alias v22-x64 v22.22.3'
-
-orb delete k8s --force; \
-sleep 3; \
-rm -r k8s-mount; \
-rm -r db; \
-orb restart k8s; \
-sleep 3; \
-kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.5.1/deploy/static/provider/cloud/deploy.yaml; \
-sleep 3; \
-kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.12.0/cert-manager.yaml; \
-sleep 3; \
-arch -x86_64 zsh --login -c 'nvm use v22-x64 && npm start'
-```
-
-```shell
-kubectl get deploy
-kubectl get deploy bl-coderunner-js -o jsonpath='{.spec.template.spec.containers[*].name}'
-kubectl get deploy bl-coderunner-js -o jsonpath='{.spec.template.spec.containers[0].image}'
-kubectl set image deployment/bl-coderunner-js bl-coderunner-js=ghcr.io/maksym-anurin-push/wearepush/backendless/bl-coderunner-js:8.1.10.28
-```
-
 # Welcome to Backendless Pro
 
 Backendless Pro is a uniquely tailored version of the widely recognized Backendless Platform, designed to meet diverse deployment needs. This special package offers the flexibility to be installed in various environments. Whether it's for individual developers or large-scale enterprise operations, Backendless Pro adapts seamlessly to different requirements.
+
+## Get Started (MacOS)
+
+Prerequisites:
+
+- macOS 15.7.9+
+- [Node Version Manager](https://github.com/nvm-sh/nvm)
+- [OrbStack](https://orbstack.dev)
+
+```shell
+# Use amd64 version of NodeJS
+arch -x86_64 zsh --login -c 'nvm install v22.22.3 --arch=x64 && nvm alias v22-x64 v22.22.3'
+
+# Cleanup pre
+orb delete k8s --force; \
+sleep 10; \
+rm -r k8s-mount; \
+rm -r db; \
+orb restart k8s; \
+sleep 30
+
+# Deploy minimal dependencies and start Backendless management(installation) service
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.5.1/deploy/static/provider/cloud/deploy.yaml; \
+sleep 5; \
+kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.12.0/cert-manager.yaml; \
+sleep 5; \
+arch -x86_64 zsh --login -c 'nvm use v22-x64 && npm start'
+
+# Open dashboard in a browser
+open http://localhost:5050
+```
 
 ## Where Can Backendless Pro Run?
 
